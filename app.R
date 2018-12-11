@@ -7,25 +7,30 @@ hourlyAvg <- readRDS("processedData/hourlyData_annual.Rds")
 
 ui <- bootstrapPage(
     tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
-    leafletOutput("map", width = "100%", height = "100%"),
-    absolutePanel(top = 10, right = 10,
-                  selectInput("region", "Region",
-                              c("All", unique(hourlyAvg$region))
-                  ),
-                  selectInput("period", "Period",
-                              unique(hourlyAvg$period)
-                  ),
-                  selectInput("layer", "Layer",
-                              unique(hourlyAvg$layer)
-                  ),
-                  sliderInput("range", "Windspeed",
-                              min(floor(hourlyAvg$value)),
-                              max(ceiling(hourlyAvg$value)),
-                              value = range(hourlyAvg$value), 
-                              step = 0.5
-                  ),
-                  selectInput("colors", "Color Scheme", c("YlOrRd","Greys")),
-                  checkboxInput("legend", "Show legend", TRUE)
+    
+    tabsetPanel(type = "tabs",
+                tabPanel("Map",
+                         leafletOutput("map", width = "100%", height = "100%"),
+                         absolutePanel(top = 10, right = 10,
+                                       selectInput("region", "Region",
+                                                   c("All", unique(hourlyAvg$region))
+                                       ),
+                                       selectInput("period", "Period",
+                                                   unique(hourlyAvg$period)
+                                       ),
+                                       selectInput("layer", "Layer",
+                                                   unique(hourlyAvg$layer)
+                                       ),
+                                       sliderInput("range", "Windspeed",
+                                                   min(floor(hourlyAvg$value)),
+                                                   max(ceiling(hourlyAvg$value)),
+                                                   value = range(hourlyAvg$value), 
+                                                   step = 0.5
+                                       ),
+                                       selectInput("colors", "Color Scheme", c("YlOrRd","Greys")),
+                                       checkboxInput("legend", "Show legend", TRUE)
+                         )
+                )
     )
 )
 
