@@ -1,5 +1,7 @@
 # statistic.R
 
+require(tidyverse)
+
 generateWeibullHours <- function(A, k){
     # takes weibull shape and scale parameters as input
     # returns df of cumulative hours at 0.5 m/s wind speed bins for 1 year
@@ -33,6 +35,23 @@ calcEnergy <- function(pc, weib){
     df <- pc %>%
         dplyr::left_join(weib, by = "WS_ms") %>%
         dplyr::mutate(Energy_MWh = (Power_kW * Hours) / 1E3)
+    
+    return(df)
+}
+
+calcDiurnalEnergy <- function(df, pc){
+    # takes wind data and power curve
+    # returns hourly energy production data
+    df <- df %>%
+        dplyr::group_by(period, layer) %>%
+        dplyr::summarize(value = mean(value)) %>%
+        tidyr::spread(key = layer, value = value) %>%
+        dplyr::mutate(energyMWh = sum(calcEnergy(pc,
+                                                 generateWeibullHours(A = WC,
+                                                                      k = WK)
+                                                 )
+                                      )
+                      )
     
     return(df)
 }

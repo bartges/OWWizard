@@ -1,4 +1,5 @@
 # visualize.R
+require(ggplot2)
 
 plotWeibull <- function(A, k){
     df <- generateWeibullHours(A, k)
@@ -17,6 +18,17 @@ plotPowerCurve <- function(pc){
         geom_line(color = "steelblue", size = 2) +
         xlab("Wind Speed [m/s]") +
         ylab("Power [kW]")
+    
+    p
+}
+
+plotDiurnalEnergy <- function(df) {
+    p <- df %>% 
+        dplyr::filter(period != "annual") %>%
+        ggplot(aes(x = period, y = energyMWh)) + 
+        geom_bar(stat = "identity") +
+        xlab("Hour") +
+        ylab("Energy [GWh]")
     
     p
 }
